@@ -51,7 +51,7 @@ func getHSBFromColor(color: UIColor) -> HSB {
 
 
 public func ansiEscapedAttributedString(helper: AnsiHelper, ansi: String) -> NSAttributedString? {
-  let string: NSAttributedString? = attributedStringWithANSIEscapedString(helper, ansi)
+  let string: NSAttributedString? = attributedStringWithANSIEscapedString(helper, aString: ansi)
   
   return string
 }
@@ -63,9 +63,8 @@ func attributedStringWithANSIEscapedString(helper: AnsiHelper, aString: String) 
 
   
   var cleanString: String?
-  var attributesAndRanges = attributesForString(helper, aString, &cleanString)
-  let foundStuff = count(attributesAndRanges)
-  var attributedString: NSMutableAttributedString = NSMutableAttributedString(string: cleanString!, attributes: [NSFontAttributeName: helper.font, NSForegroundColorAttributeName: helper.defaultStringColor])
+  let attributesAndRanges = attributesForString(helper, aString: aString, aCleanString: &cleanString)
+  let attributedString: NSMutableAttributedString = NSMutableAttributedString(string: cleanString!, attributes: [NSFontAttributeName: helper.font, NSForegroundColorAttributeName: helper.defaultStringColor])
   
   for thisAttributeDict: [String: AnyObject] in attributesAndRanges {
     if let attributeValue: AnyObject = thisAttributeDict[AttributeKeys.value], let attributeName: String = thisAttributeDict[AttributeKeys.name] as? String, let range = thisAttributeDict[AttributeKeys.range] as? NSRange {
@@ -81,7 +80,7 @@ func attributesForString(helper: AnsiHelper, aString: String, inout aCleanString
     return []
   }
   
-  if (count(aString) <= count(EscapeCharacters.CSI)) {
+  if (aString.characters.count <= EscapeCharacters.CSI.characters.count) {
     if (aCleanString != nil) {
       aCleanString = aString
     }
@@ -91,19 +90,19 @@ func attributesForString(helper: AnsiHelper, aString: String, inout aCleanString
   var attrsAndRanges = [[String: AnyObject]]()
   
   var cleanString: String? = ""
-  let formatCodes: [[String: AnyObject]] = escapeCodesForString(aString, &cleanString)
-  let foundCodes = count(formatCodes)
+  let formatCodes: [[String: AnyObject]] = escapeCodesForString(aString, cleanString: &cleanString)
+  let foundCodes = formatCodes.count
   var startIndex = 0
   var range: NSRange
   
-  for (index, thisCodeDict) in enumerate(formatCodes) {
-    var thisCode = thisCodeDict[AttributeKeys.code] as! Int
-    var code = SGRCode(rawValue: thisCode)
+  for (index, thisCodeDict) in formatCodes.enumerate() {
+    let thisCode = thisCodeDict[AttributeKeys.code] as! Int
+    let code = SGRCode(rawValue: thisCode)
     
     if let attributeName = attributeNameForCode(code!) {
-      if let attributeValue: AnyObject = attributeValueForCode(code!, helper) {
+      if let attributeValue: AnyObject = attributeValueForCode(code!, helper: helper) {
         startIndex = index + 1
-        range = rangeOfString(cleanString!, thisCodeDict, Array(formatCodes[startIndex..<foundCodes]))
+        range = rangeOfString(cleanString!, startCode: thisCodeDict, codes: Array(formatCodes[startIndex..<foundCodes]))
         attrsAndRanges.append([
           AttributeKeys.range: range,
           AttributeKeys.name: attributeName,
@@ -122,18 +121,18 @@ func attributesForString(helper: AnsiHelper, aString: String, inout aCleanString
 
 func rangeOfString(string: String, startCode: [String: AnyObject], codes: [[String: AnyObject]]) -> NSRange {
   var formattingRunEndLocation = -1
-  var formattingRunStartLocation = startCode[AttributeKeys.location] as! Int
-  var formattingRunStartCode = SGRCode(rawValue: startCode[AttributeKeys.code] as! Int)
+  let formattingRunStartLocation = startCode[AttributeKeys.location] as! Int
+  let formattingRunStartCode = SGRCode(rawValue: startCode[AttributeKeys.code] as! Int)
 
   for endCode: [String: AnyObject] in codes {
-    var theEndCode = endCode[AttributeKeys.code] as! Int
-    if (shouldEndFormattingIntroduced(SGRCode(rawValue: theEndCode)!, formattingRunStartCode!)) {
+    let theEndCode = endCode[AttributeKeys.code] as! Int
+    if (shouldEndFormattingIntroduced(SGRCode(rawValue: theEndCode)!, startCode: formattingRunStartCode!)) {
       formattingRunEndLocation = endCode[AttributeKeys.location] as! Int
       break
     }
   }
   if (formattingRunEndLocation == -1) {
-    formattingRunEndLocation = count(string)
+    formattingRunEndLocation = string.characters.count
   }
 
   let range = NSMakeRange(formattingRunStartLocation, (formattingRunEndLocation-formattingRunStartLocation))
@@ -160,13 +159,13 @@ func attributeValueForCode(code: SGRCode, helper: AnsiHelper) -> AnyObject? {
   if codeIsColor(code) {
     return code.color
   } else if code == SGRCode.IntensityBold {
-    traits = traits | .TraitBold
+    traits = traits.union(.TraitBold)
     if let boldDescriptor: UIFontDescriptor = descriptor.fontDescriptorWithSymbolicTraits(traits) {
       let boldFont: UIFont = UIFont(descriptor: boldDescriptor, size: helper.font.pointSize)
       return boldFont
     }
   } else if codeIsIntensity(code) {
-    traits = traits | .TraitMonoSpace
+    traits = traits.union(.TraitMonoSpace)
     if let newDescriptor: UIFontDescriptor = descriptor.fontDescriptorWithSymbolicTraits(traits) {
       let unboldFont = UIFont(descriptor: newDescriptor, size: helper.font.pointSize)
       return unboldFont
@@ -230,13 +229,13 @@ func escapeCodesForString(escapedString: String, inout cleanString: String?) -> 
     return []
   }
   
-  if (aString.length <= count(EscapeCharacters.CSI)) {
+  if (aString.length <= EscapeCharacters.CSI.characters.count) {
     return []
   }
   
   var formatCodes = [[String: AnyObject]]()
   
-  var aStringLength = aString.length
+  let aStringLength = aString.length
   var coveredLength = 0
   
   var searchRange = NSMakeRange(0, aStringLength)
@@ -244,7 +243,7 @@ func escapeCodesForString(escapedString: String, inout cleanString: String?) -> 
   var thisCoveredLength: Int = 0
   var searchStart: Int = 0
   
-  do
+  repeat
   {
     sequenceRange = aString.rangeOfString(EscapeCharacters.CSI, options: NSStringCompareOptions.LiteralSearch, range: searchRange)
     
@@ -253,7 +252,7 @@ func escapeCodesForString(escapedString: String, inout cleanString: String?) -> 
       thisCoveredLength = sequenceRange.location - searchRange.location
       coveredLength += thisCoveredLength
 
-      formatCodes += codesForSequence(&sequenceRange, aString).map { code in
+        formatCodes += codesForSequence(&sequenceRange, string: aString).map { code in
         [AttributeKeys.code: code, AttributeKeys.location: coveredLength]
       }
       
@@ -287,7 +286,7 @@ func codesForSequence(inout sequenceRange: NSRange, string: NSString) -> [Int] {
       break
     }
     
-    var c: Int = Int(string.characterAtIndex(thisIndex))
+    let c: Int = Int(string.characterAtIndex(thisIndex))
     
     if ((48 <= c) && (c <= 57))
     {
@@ -307,7 +306,7 @@ func codesForSequence(inout sequenceRange: NSRange, string: NSString) -> [Int] {
       code = 0
     }
     
-    lengthAddition++
+    lengthAddition = lengthAddition + 1
   }
   
   sequenceRange.length += lengthAddition

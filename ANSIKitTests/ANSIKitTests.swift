@@ -15,10 +15,10 @@ class ANSISpec: QuickSpec {
     describe("attributedString") {
       it("constructs") {
         let filePath = NSBundle(forClass: ANSISpec.self).pathForResource("log", ofType: "txt")
-        var dataResponse: NSData?
-        let result:NSString = NSString(contentsOfFile: filePath!, encoding: NSUTF8StringEncoding, error: nil)!
+        let dataResponse: NSData?
+        let result:String = try! String(contentsOfFile: filePath!, encoding: NSUTF8StringEncoding)
         let helper = AnsiHelper(color: UIColor.whiteColor(), font: UIFont.preferredFontForTextStyle(UIFontTextStyleBody))
-        let attributed = ansiEscapedAttributedString(helper, result as String)
+        let attributed = ansiEscapedAttributedString(helper, ansi: result as String)
         
         expect(attributed).notTo(beNil())
       }
