@@ -99,8 +99,9 @@ func attributesForString(helper: AnsiHelper, aString: String, inout aCleanString
     let thisCode = thisCodeDict[AttributeKeys.code] as! Int
     let code = SGRCode(rawValue: thisCode)
     
-    if let attributeName = attributeNameForCode(code!) {
-      if let attributeValue: AnyObject = attributeValueForCode(code!, helper: helper) {
+    guard let c = code else { continue }
+    if let attributeName = attributeNameForCode(c) {
+      if let attributeValue: AnyObject = attributeValueForCode(c, helper: helper) {
         startIndex = index + 1
         range = rangeOfString(cleanString!, startCode: thisCodeDict, codes: Array(formatCodes[startIndex..<foundCodes]))
         attrsAndRanges.append([
