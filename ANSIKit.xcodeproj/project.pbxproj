@@ -9,13 +9,10 @@
 /* Begin PBXBuildFile section */
 		C95E4EED1A945F1A0067CAD9 /* ANSIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C95E4EEC1A945F1A0067CAD9 /* ANSIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C95E4EF31A945F1A0067CAD9 /* ANSIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C95E4EE71A945F1A0067CAD9 /* ANSIKit.framework */; };
-		C95E4EFA1A945F1A0067CAD9 /* ANSIKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95E4EF91A945F1A0067CAD9 /* ANSIKitTests.swift */; };
 		C95E4F041A9463D70067CAD9 /* SGRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95E4F031A9463D70067CAD9 /* SGRCode.swift */; };
 		C96873BD1A9475D50022366B /* ANSI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96873BC1A9475D50022366B /* ANSI.swift */; };
 		C96873C11A94CB160022366B /* log.txt in Resources */ = {isa = PBXBuildFile; fileRef = C96873C01A94CB160022366B /* log.txt */; };
 		C9845A6F1A94700C0082154F /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9845A6E1A94700C0082154F /* Colors.swift */; };
-		C9E1EFCD1AB595D40097D392 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E1EFCB1AB595D40097D392 /* Nimble.framework */; };
-		C9E1EFCE1AB595D40097D392 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E1EFCC1AB595D40097D392 /* Quick.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +31,6 @@
 		C95E4EEC1A945F1A0067CAD9 /* ANSIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ANSIKit.h; sourceTree = "<group>"; };
 		C95E4EF21A945F1A0067CAD9 /* ANSIKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ANSIKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C95E4EF81A945F1A0067CAD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C95E4EF91A945F1A0067CAD9 /* ANSIKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIKitTests.swift; sourceTree = "<group>"; };
 		C95E4F031A9463D70067CAD9 /* SGRCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGRCode.swift; sourceTree = "<group>"; };
 		C96873BC1A9475D50022366B /* ANSI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ANSI.swift; sourceTree = "<group>"; };
 		C96873C01A94CB160022366B /* log.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = log.txt; sourceTree = "<group>"; };
@@ -55,8 +51,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9E1EFCD1AB595D40097D392 /* Nimble.framework in Frameworks */,
-				C9E1EFCE1AB595D40097D392 /* Quick.framework in Frameworks */,
 				C95E4EF31A945F1A0067CAD9 /* ANSIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,7 +99,6 @@
 		C95E4EF61A945F1A0067CAD9 /* ANSIKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				C95E4EF91A945F1A0067CAD9 /* ANSIKitTests.swift */,
 				C96873BF1A94CACE0022366B /* ansi formatted */,
 				C95E4EF71A945F1A0067CAD9 /* Supporting Files */,
 			);
@@ -250,7 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C95E4EFA1A945F1A0067CAD9 /* ANSIKitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
